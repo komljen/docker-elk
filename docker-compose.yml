@@ -1,7 +1,5 @@
 version: '2'
-
 services:
-
   elasticsearch:
     build: elasticsearch/
     ports:
@@ -26,10 +24,12 @@ services:
       - ./logstash/pipeline:/usr/share/logstash/pipeline
     ports:
       - "5000:5000"
+      - "12200:12200"
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
     networks:
-      - elk
+      elk:
+        ipv4_address: "172.22.0.101"
     depends_on:
       - elasticsearch
 
@@ -44,7 +44,21 @@ services:
     depends_on:
       - elasticsearch
 
-networks:
+  dummy_container:
+    image: ubuntu
+    logging:
+      driver: gelf
+      options:
+        gelf-address: "udp://172.22.0.101:12200"
+    command: bash -c "while true; do date && echo this is a test; sleep 1; done"
+    networks:
+      - elk
+    depends_on:
+      - logstash
 
+networks:
   elk:
     driver: bridge
+    ipam:
+      config:
+      - subnet: 172.22.0.0/24
