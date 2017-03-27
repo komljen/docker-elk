@@ -50,7 +50,8 @@ services:
       driver: gelf
       options:
         gelf-address: "udp://172.22.0.101:12200"
-    command: bash -c "while true; do date && echo this is a test; sleep 1; done"
+        tag: "tomcatapp"
+    command: 'bash -c "while true; do echo \"2017-03-07 19:23:52.188  INFO 13 --- [main] io.test.Application      : Starting Application v0.1.0 on c03410f6beb0 with PID 13 (/root/mysbapplication.jar started by root in /root)\"; sleep 1; done"'
     networks:
       - elk
     depends_on:
