@@ -57,6 +57,15 @@ services:
     depends_on:
       - logstash
 
+  crontab:
+    build: crontab/
+    environment:
+      DAYS_TO_KEEP: 2
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
+
 networks:
   elk:
     driver: bridge
